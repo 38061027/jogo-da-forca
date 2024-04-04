@@ -1,5 +1,5 @@
 const tecnologias = [
-    'java','ruby','html','angular'
+    'java', 'ruby', 'html', 'angular'
 ]
 
 const palavraSecreta = tecnologias[Math.floor(Math.random() * tecnologias.length)]
@@ -7,17 +7,17 @@ const palavraSecreta = tecnologias[Math.floor(Math.random() * tecnologias.length
 let letrasErradas = []
 let letrasCorretas = []
 
-document.addEventListener("keydown", (evento)=>{
+document.addEventListener("keydown", (evento) => {
     const codigo = evento.keyCode
-    if(isLetra(codigo)){
+    if (isLetra(codigo)) {
         const letra = evento.key
-      
-        if(letrasErradas.includes(letra)){
+
+        if (letrasErradas.includes(letra)) {
             mostrarAvisoLetraRepetida()
-        }else{
-            if(palavraSecreta.includes(letra)){
+        } else {
+            if (palavraSecreta.includes(letra)) {
                 letrasCorretas.push(letra)
-            }else{
+            } else {
                 letrasErradas.push(letra)
             }
         }
@@ -27,39 +27,74 @@ document.addEventListener("keydown", (evento)=>{
     }
 })
 
-function atualizarJogo(){
+function atualizarJogo() {
     mostrarLetrasErradas()
     mostrarLetrasCertas()
+    desenharForca()
+    checarJogo()
 }
 
-function mostrarLetrasErradas(){
+function mostrarLetrasErradas() {
     const div = document.querySelector('.letras-erradas-container')
     div.innerHTML = '<h3>Letras erradas</h3>'
-    letrasErradas.forEach(letra =>{
+    letrasErradas.forEach(letra => {
         div.innerHTML += `<span>${letra}</span>`
     })
 }
 
-function mostrarLetrasCertas(){
+function mostrarLetrasCertas() {
     const container = document.querySelector('.palavra-secreta-container')
     container.innerHTML = ''
-    palavraSecreta.split('').forEach(letra =>{
-        if(letrasCorretas.includes(letra)){
-            container.innerHTML+=`<span>${letra}</span>`
-        }else{
-            container.innerHTML+=`<span>_</span>`
+    palavraSecreta.split('').forEach(letra => {
+        if (letrasCorretas.includes(letra)) {
+            container.innerHTML += `<span>${letra}</span>`
+        } else {
+            container.innerHTML += `<span>_</span>`
         }
     })
 }
 
-function mostrarAvisoLetraRepetida(){
-    const aviso = document.querySelector('.aviso-palavra-repetida')
-    aviso.classList.add('show')
-    setTimeout(()=>{
-        aviso.classList.remove('show')
-    },1000)
+function checarJogo() {
+    let mensagem = ""
+    const container = document.querySelector('.palavra-secreta-container')
+    const parteCorpo = document.querySelectorAll(".forca-parte")
+
+
+    if (letrasErradas.length === parteCorpo.length) {
+        mensagem = "Fim de jogo! Você perdeu!"
+    }
+
+
+    if (palavraSecreta === container.innerText) {
+        mensagem = "Parabéns! Você ganhou!"
+    }
+
+    if (mensagem) {
+        document.querySelector('#mensagem').innerHTML = mensagem
+        document.querySelector('.popup-container').style.display = "flex"
+    }
+
 }
 
-function isLetra(codigo){
-    return codigo >= 65 && codigo <=90
+function desenharForca() {
+    const parteCorpo = document.querySelectorAll(".forca-parte")
+    for (let i = 0; i < letrasErradas.length; i++) {
+        parteCorpo[i].style.display = 'block'
+    }
+}
+
+function mostrarAvisoLetraRepetida() {
+    const aviso = document.querySelector('.aviso-palavra-repetida')
+    aviso.classList.add('show')
+    setTimeout(() => {
+        aviso.classList.remove('show')
+    }, 1000)
+}
+
+function isLetra(codigo) {
+    return codigo >= 65 && codigo <= 90
+}
+
+function reiniciarJogo(){
+    window.location.reload()
 }
